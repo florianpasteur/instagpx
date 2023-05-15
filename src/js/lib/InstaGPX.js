@@ -38,7 +38,7 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
     context.fillText(line, x, y);
 }
 
-function plotElevationGraph(context, x, y, w, h, elevation, distance) {
+function plotElevationGraph(context, x, y, w, h, elevation, distance, config) {
 
     function map(value, start1, stop1, start2, stop2) {
         return ((value - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
@@ -55,8 +55,8 @@ function plotElevationGraph(context, x, y, w, h, elevation, distance) {
     }
 
     let _altitudeDiff = (elevation.max - elevation.min);
-    let _altitudeFactor = clamp(_altitudeDiff, 0, 1000);
-        _altitudeFactor = map(_altitudeFactor, 0, 1000, 0, h);
+    let _altitudeFactor = clamp(_altitudeDiff, config.elevationMin, elevation.max);
+        _altitudeFactor = map(_altitudeFactor, config.elevationMin, elevation.max + (_altitudeDiff * 0.1), config.elevationMin, h);
 
     let _altitudeFactorRest = h - _altitudeFactor;
     let _altitudeYOffset = (80*_altitudeFactorRest)/100; // 80:20
@@ -104,11 +104,12 @@ function plotElevationGraph(context, x, y, w, h, elevation, distance) {
     // Profile
     context.beginPath();
     context.moveTo( x-10, y+h+10);
+    debugger
     elevation.dataPoints.forEach((el, i, arr) => {
-        if (i == 0) { context.lineTo( x-10, map(el.elevation, elevation.min, elevation.max, _altitudeFactor, 0) + y + _altitudeYOffset ) }
+        if (i == 0) { context.lineTo( x-10, map(el.elevation, config.elevationMin || elevation.min, elevation.max, _altitudeFactor, 0) + y + _altitudeYOffset ) }
         context.lineTo(
             map(el.dist, 0, distance.km, 0, w) + x,
-            map(el.elevation, elevation.min, elevation.max, _altitudeFactor, 0) + y + _altitudeYOffset
+            map(el.elevation, config.elevationMin || elevation.min, elevation.max, _altitudeFactor, 0) + y + _altitudeYOffset
         )
         if (i == arr.length-1) { context.lineTo( x+w+10, map(el.elevation, elevation.min, elevation.max, _altitudeFactor, 0) + y + _altitudeYOffset ) }
     });
@@ -150,8 +151,8 @@ function instaGPX(gpxData, imgData, outputSize) {
         distance : parseFloat(config.distance || ((config.units == 'metric') ? gpxData.distance.km : gpxData.distance.mi)).toFixed(2),
         distanceUnit : (config.units == 'metric') ? 'km' : 'mi',
         duration : _duration,
-        elevation : Math.round(gpxData.elevation.gain),
-        speed : (config.units == 'metric') ? (gpxData.speed.kmh).toFixed(1) : (gpxData.speed.mih).toFixed(1),
+        elevation : config.elevation || Math.round(config.elevation) || Math.round(gpxData.elevation.gain),
+        speed : config.speed || ((config.units == 'metric') ? (gpxData.speed.kmh).toFixed(1) : (gpxData.speed.mih).toFixed(1)),
         pace : _pace.minutes +'\''+ String(_pace.seconds).padStart(2, '0'),
         optionLabel : ((config.show == 'elevation') ? 'elevation' : (config.activity == 'ride') ? 'speed' : 'pace')
     }
@@ -341,7 +342,8 @@ function instaGPX(gpxData, imgData, outputSize) {
                 outputSize.width - (config.padding*2),
                 (outputSize.height/6),
                 gpxData.elevation,
-                gpxData.distance
+                gpxData.distance,
+                config
             );
         }
 

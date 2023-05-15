@@ -57,6 +57,10 @@
                         <label for="activity-elevation">Elevation</label>
                         <input type="text" placeholder="Write your activity elevation here" name="activity-elevation" id="activity-elevation" maxlength="140" v-model="options.elevation" />
                     </p>
+                    <p class="form-input-container">
+                        <label for="activity-speed">Speed</label>
+                        <input type="text" placeholder="Write your activity speed here" name="activity-speed" id="activity-speed" maxlength="140" v-model="options.speed" />
+                    </p>
                     <p class="form-input-container" v-if="gpx.timestamp">
                         <label for="activity-date">Date Format</label>
                         <select v-model="options.timestampPattern" name="activity-date" id="activity-date">
@@ -100,6 +104,12 @@
                             <input type="radio" name="activity-unit" id="activity-unit-imperial" v-model="options.units" value="imperial" />
                             <label for="activity-unit-imperial">Miles</label>
                         </span>
+                    </p>
+
+
+                    <p class="form-input-container">
+                        <label for="activity-elevationMin">Elevation min</label>
+                        <input type="text" placeholder="Write your elevation min" name="activity-elevationMin" id="activity-elevationMin" maxlength="140" v-model="options.elevationMin" />
                     </p>
 
                     <h4>View Options</h4>
@@ -209,6 +219,7 @@ const App =  {
             let _distance = this.gpx.distance.km;
             let _time = this.gpx.duration;
             let _elevation = this.gpx.elevation.gain;
+            let _elevationMin = this.gpx.elevation.min;
             let _speed = this.gpx.speed.kmh;
             let _act = 'ride';
 
@@ -223,6 +234,8 @@ const App =  {
             this.options.distance = _distance;
             this.options.time = _time;
             this.options.elevation = _elevation;
+            this.options.elevationMin = _elevationMin;
+            this.options.speed = _speed;
 
             reverseGeocoding(_latStart, _lonStart, (start) => {
 
