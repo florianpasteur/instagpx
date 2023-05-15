@@ -89,7 +89,7 @@ function createMap(points, size, provider, callback) {
             mapbox.options.overlay += `,pin-l-marker+387edf(${mapbox.finish[1]},${mapbox.finish[0]})`;
 
             let _urlMapbox = `${mapbox.options.endpoint}${mapbox.options.username}/${mapbox.options.style_id}/static/${mapbox.options.overlay}/${mapbox.options.location}/${mapbox.options.width}x${mapbox.options.height}@2x`;
-                _urlMapbox += `?logo=false&attribution=false&access_token=${mapbox.options.token}`;
+                _urlMapbox += `?padding=-250&logo=false&attribution=false&access_token=${mapbox.options.token}`;
 
             _output = _urlMapbox;
             break;
