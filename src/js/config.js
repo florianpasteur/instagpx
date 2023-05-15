@@ -48,6 +48,8 @@ const Data = {
         show : 'speed', // elevation || speed
         wordSpacing : 10, // 10?
         title : '',
+        distance : '',
+        time : '',
         timestampPattern : 0,
         promote : true,
         graph : true // Elevation graph

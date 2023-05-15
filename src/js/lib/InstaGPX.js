@@ -147,7 +147,7 @@ function instaGPX(gpxData, imgData, outputSize) {
     let _pace = gpxData.pace[(config.units == 'metric') ? 'perKm' : 'perMile'];
 
     let output = {
-        distance : ((config.units == 'metric') ? gpxData.distance.km : gpxData.distance.mi).toFixed(2),
+        distance : parseFloat(config.distance || ((config.units == 'metric') ? gpxData.distance.km : gpxData.distance.mi)).toFixed(2),
         distanceUnit : (config.units == 'metric') ? 'km' : 'mi',
         duration : _duration,
         elevation : Math.round(gpxData.elevation.gain),

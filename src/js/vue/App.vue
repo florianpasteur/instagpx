@@ -41,6 +41,22 @@
                         <label for="activity-title">Title</label>
                         <input type="text" placeholder="Write your activity title here" name="activity-title" id="activity-title" maxlength="140" v-model="options.title" />
                     </p>
+
+                    <p class="form-input-container">
+                        <label for="activity-distance">Distance</label>
+                        <input type="text" placeholder="Write your activity distance here" name="activity-distance" id="activity-distance" maxlength="140" v-model="options.distance" />
+                    </p>
+
+                    <p class="form-input-container">
+                        <label for="activity-time">Time</label>
+                        <input type="text" style="width: 50px" placeholder="H" name="activity-time" id="activity-time" maxlength="140" v-model="options.time.hours" />h
+                        <input type="text" style="width: 50px" placeholder="M" name="activity-time" id="activity-time" maxlength="140" v-model="options.time.minutes" />m
+                        <input type="text" style="width: 50px" placeholder="S" name="activity-time" id="activity-time" maxlength="140" v-model="options.time.seconds" />s
+                    </p>
+                    <p class="form-input-container">
+                        <label for="activity-elevation">Elevation</label>
+                        <input type="text" placeholder="Write your activity elevation here" name="activity-elevation" id="activity-elevation" maxlength="140" v-model="options.elevation" />
+                    </p>
                     <p class="form-input-container" v-if="gpx.timestamp">
                         <label for="activity-date">Date Format</label>
                         <select v-model="options.timestampPattern" name="activity-date" id="activity-date">
@@ -184,11 +200,15 @@ const App =  {
 
         postGPX() {
 
+            console.log(this.gpx);
+
             let _latStart = this.gpx.coords.start.lat;
             let _lonStart = this.gpx.coords.start.lon;
             let _latEnd = this.gpx.coords.end.lat;
             let _lonEnd = this.gpx.coords.end.lon;
             let _distance = this.gpx.distance.km;
+            let _time = this.gpx.duration;
+            let _elevation = this.gpx.elevation.gain;
             let _speed = this.gpx.speed.kmh;
             let _act = 'ride';
 
@@ -200,6 +220,9 @@ const App =  {
             this.options.activity = _act;
             this.options.show = (_act == 'run') ? 'speed' : 'elevation';
             this.options.title = (_latStart).toFixed(6) +', '+ (_lonStart).toFixed(6);
+            this.options.distance = _distance;
+            this.options.time = _time;
+            this.options.elevation = _elevation;
 
             reverseGeocoding(_latStart, _lonStart, (start) => {
 
